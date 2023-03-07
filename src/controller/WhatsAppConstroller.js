@@ -205,14 +205,45 @@ class WhatsAppConstroller {
 
         this.el.btnAttachPhoto.on('click' , e => {
 
-            console.log('photo')
+           this.el.inputPhoto.click()
 
         });
 
 
+        this.el.inputPhoto.on('change', e =>{
+
+            console.log( this.el.inputPhoto.files);
+
+            [...this.el.inputPhoto.files].forEach(file=>{
+
+                console.log(file);
+
+            });
+
+        })
+
+
         this.el.btnAttachCamera.on('click' , e => {
 
-            console.log('camera')
+           this.el.panelMessagesContainer.hide();
+           this.el.panelCamera.addClass('open');
+           this.el.panelCamera.css({
+            'height':'calc(100%)'
+           });
+
+        });
+
+        this.el.btnClosePanelCamera.on('click' , e =>{
+
+           this.el.panelCamera.removeClass('open');
+           this.el.panelMessagesContainer.show();
+
+
+        });
+
+        this.el.btnTakePicture.on('click' , e => {
+
+            console.log('take picture')
 
         });
 
