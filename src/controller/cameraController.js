@@ -1,4 +1,4 @@
-class cameraController {
+export class cameraController {
 
     constructor(videoEl) {
 
