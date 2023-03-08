@@ -365,6 +365,29 @@ class WhatsAppConstroller {
 
                 this.el.inputText.appendChild(img);
 
+                let cursor = window.getSelection();
+
+                if(!cursor.focusNode || !cursor.focusNode.id == 'input-text'){
+
+                    this.el.inputText.focus();
+
+                    cursor = window.getSelection();
+
+                }
+
+                let range = document.createRange();
+
+                range = cursor.getRangeAt(0);
+                range.deleteContents();
+
+                let frag = document.createDocumentFragment();
+
+                frag.appendChild(img);
+
+                range.insertNode(frag);
+
+                range.setStartAfter(img);
+
                 this.el.inputText.dispatchEvent(new Event('keyup'));
 
             });
