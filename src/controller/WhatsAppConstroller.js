@@ -90,15 +90,15 @@ class WhatsAppConstroller {
 
         HTMLFormElement.prototype.toJSON = function () {
 
-         let json = {};
+            let json = {};
 
-         this.getForm().forEach((value,key)=>{
+            this.getForm().forEach((value, key) => {
 
-            json[key] = value;
+                json[key] = value;
 
-         });
+            });
 
-         return json;
+            return json;
         }
 
     }
@@ -178,11 +178,11 @@ class WhatsAppConstroller {
 
         })
 
-        this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item =>{
+        this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item => {
 
-            item.on('click' , e => {
+            item.on('click', e => {
 
-                this.el.home.hide(); 
+                this.el.home.hide();
 
                 this.el.main.css({
 
@@ -196,25 +196,25 @@ class WhatsAppConstroller {
 
         this.el.btnAttach.on('click', e => {
 
-            e.stopPropagation(); 
+            e.stopPropagation();
 
             this.el.menuAttach.addClass('open');
-            document.addEventListener ('click', this.closeMenuAttach.bind(this))
+            document.addEventListener('click', this.closeMenuAttach.bind(this))
 
         });
 
-        this.el.btnAttachPhoto.on('click' , e => {
+        this.el.btnAttachPhoto.on('click', e => {
 
-           this.el.inputPhoto.click()
+            this.el.inputPhoto.click()
 
         });
 
 
-        this.el.inputPhoto.on('change', e =>{
+        this.el.inputPhoto.on('change', e => {
 
-            console.log( this.el.inputPhoto.files);
+            console.log(this.el.inputPhoto.files);
 
-            [...this.el.inputPhoto.files].forEach(file=>{
+            [...this.el.inputPhoto.files].forEach(file => {
 
                 console.log(file);
 
@@ -223,48 +223,85 @@ class WhatsAppConstroller {
         })
 
 
-        this.el.btnAttachCamera.on('click' , e => {
+        this.el.btnAttachCamera.on('click', e => {
 
-           this.el.panelMessagesContainer.hide();
-           this.el.panelCamera.addClass('open');
-           this.el.panelCamera.css({
-            'height':'calc(100%)'
-           });
-
-        });
-
-        this.el.btnClosePanelCamera.on('click' , e =>{
-
-           this.el.panelCamera.removeClass('open');
-           this.el.panelMessagesContainer.show();
-
+            this.closeAllMainPanel();
+            this.el.panelCamera.addClass('open');
+            this.el.panelCamera.css({
+                'height': 'calc(100%)'
+            });
 
         });
 
-        this.el.btnTakePicture.on('click' , e => {
+        this.el.btnClosePanelCamera.on('click', e => {
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
+
+
+        });
+
+        this.el.btnTakePicture.on('click', e => {
 
             console.log('take picture')
 
         });
 
 
-        this.el.btnAttachDocument.on('click' , e => {
+        this.el.btnAttachDocument.on('click', e => {
 
-            console.log('Doc')
+            this.closeAllMainPanel();
+            this.el.panelDocumentPreview.addClass('open')
+            this.el.panelDocumentPreview.css({
+                'height': 'calc(100%)'
+            });
+
+        });
+
+        this.el.btnClosePanelDocumentPreview.on('click', e => {
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
+
+        });
+
+        this.el.btnSendDocument.on('click', e => {
+
+            console.log('send-doc')
 
         });
 
 
-        this.el.btnAttachContact.on('click' , e => {
+        this.el.btnAttachContact.on('click', e => {
 
-            console.log('Contato')
+            this.el.modalContacts.show();
 
         });
+
+        this.el.btnCloseModalContacts.on('click', e => {
+
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
+
+        });
+
+
 
     }
     /*==============================================================================================================*/
 
-    closeMenuAttach(){
+    closeAllMainPanel() {
+
+        this.el.panelCamera.removeClass('open');
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelMessagesContainer.hide();
+        this.el.modalContacts.hide();
+
+
+    }
+
+    closeMenuAttach() {
 
         document.removeEventListener('click', this.closeMenuAttach);
         this.el.menuAttach.removeClass('open');
