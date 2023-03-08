@@ -231,6 +231,8 @@ class WhatsAppConstroller {
                 'height': 'calc(100%)'
             });
 
+            this._camera = new cameraController(this.el.videoCamera);
+
         });
 
         this.el.btnClosePanelCamera.on('click', e => {
