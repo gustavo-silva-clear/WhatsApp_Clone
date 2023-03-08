@@ -286,10 +286,59 @@ class WhatsAppConstroller {
 
         });
 
+        this.el.btnSendMicrophone.on('click', e => {
 
+            this.el.recordMicrophone.show();
+            this.el.btnSendMicrophone.hide();
+            this.startRecordMicrophoneTime();
+
+        });
+
+        this.el.btnCancelMicrophone.on('click', e => {
+
+            this.closeRecordMicrophone();
+
+        });
+
+        this.el.btnFinishMicrophone.on('click', e => {
+
+            this.closeRecordMicrophone();
+        })
+
+
+        this.el.inputText.on('keypress', e => {
+
+            if (e.key === 'Enter') {
+
+                e.preventDefault();
+                console.log('chat');
+
+            }
+
+        });
 
     }
     /*==============================================================================================================*/
+
+    startRecordMicrophoneTime(){
+
+        let start = Date.now();
+
+        this._recordMicrophoneInterval = setInterval(()=>{
+
+            this.el.recordMicrophoneTimer.innerHTML = (Date.now() - start);
+
+        },100);
+
+    }
+
+    closeRecordMicrophone() {
+
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show();
+        clearInterval(this._recordMicrophoneInterval)
+
+    }
 
     closeAllMainPanel() {
 
