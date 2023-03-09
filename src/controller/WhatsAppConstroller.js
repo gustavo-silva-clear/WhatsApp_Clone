@@ -293,6 +293,10 @@ export class WhatsAppConstroller {
 
             if (this.el.inputDocument.files.length) {
 
+                this.el.panelDocumentPreview.css({
+                    'height': '10%'
+                });
+
                 let file = this.el.inputDocument.files[0];
 
                 this._documentPreviewController = new DocumentPreviewController(file);
@@ -304,14 +308,17 @@ export class WhatsAppConstroller {
                     this.el.imagePanelDocumentPreview.show();
                     this.el.filePanelDocumentPreview.hide();
 
-
-                    // console.log('ok' , data);
+                    this.el.panelDocumentPreview.css({
+                        'height': 'calc(100%)'
+                    });
 
                 }).catch(err => {
 
-                    console.log( file.type);
+                    this.el.panelDocumentPreview.css({
+                        'height': 'calc(100%)'
+                    });
 
-                    switch (file.mimetype) {
+                    switch (file.type) {
 
                         case 'application/vnd.oasis.opendocument.presentation':
                             this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
@@ -338,6 +345,8 @@ export class WhatsAppConstroller {
                     this.el.filenamePanelDocumentPreview.innerHTML = file.name;
                     this.el.imagePanelDocumentPreview.hide();
                     this.el.filePanelDocumentPreview.show();
+
+                    console.log('errado')
 
                 });
 
