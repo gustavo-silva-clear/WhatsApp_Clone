@@ -390,10 +390,12 @@ export class WhatsAppConstroller {
             this.startRecordMicrophoneTime();
 
            this._microphoneController =  new microphoneController();
-           
-           this._microphoneController.on('play' , musica=>{
+          
+           this._microphoneController.on('ready' , musica=>{
 
-            console.log('play event received' , musica);
+            console.log('ready event');
+            
+            this._microphoneController.startRecorder();
 
            });
 
@@ -401,14 +403,14 @@ export class WhatsAppConstroller {
 
         this.el.btnCancelMicrophone.on('click', e => {
 
-            this._microphoneController.stop();
+            this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();
 
         });
 
         this.el.btnFinishMicrophone.on('click', e => {
 
-            this._microphoneController.stop();
+            this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();
         })
 
