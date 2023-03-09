@@ -1,5 +1,6 @@
-import {Format} from './../util/Format'
-import {cameraController} from './cameraController'
+import { Format } from './../util/Format'
+import { cameraController } from './cameraController'
+import { DocumentPreviewController } from './DocumentPreviewController';
 
 export class WhatsAppConstroller {
 
@@ -248,7 +249,7 @@ export class WhatsAppConstroller {
 
         this.el.btnTakePicture.on('click', e => {
 
-          let dataUrl = this._camera.takePicture();
+            let dataUrl = this._camera.takePicture();
 
             this.el.pictureCamera.src = dataUrl;
             this.el.pictureCamera.show();
@@ -259,7 +260,7 @@ export class WhatsAppConstroller {
 
         });
 
-        this.el.btnReshootPanelCamera.on('click' , e =>{
+        this.el.btnReshootPanelCamera.on('click', e => {
 
             this.el.pictureCamera.hide();
             this.el.videoCamera.show();
@@ -270,7 +271,7 @@ export class WhatsAppConstroller {
 
         });
 
-        this.el.btnSendPicture.on('click' , e=>{
+        this.el.btnSendPicture.on('click', e => {
 
             console.log(this.el.pictureCamera);
 
@@ -283,6 +284,64 @@ export class WhatsAppConstroller {
             this.el.panelDocumentPreview.css({
                 'height': 'calc(100%)'
             });
+
+            this.el.inputDocument.click();
+
+        });
+
+        this.el.inputDocument.on('change', e => {
+
+            if (this.el.inputDocument.files.length) {
+
+                let file = this.el.inputDocument.files[0];
+
+                this._documentPreviewController = new DocumentPreviewController(file);
+
+                this._documentPreviewController.getPreviewData().then(result => {
+
+                    this.el.imgPanelDocumentPreview.src = result.src;
+                    this.el.infoPanelDocumentPreview.innerHTML = result.info;
+                    this.el.imagePanelDocumentPreview.show();
+                    this.el.filePanelDocumentPreview.hide();
+
+
+                    // console.log('ok' , data);
+
+                }).catch(err => {
+
+                    console.log( file.type);
+
+                    switch (file.mimetype) {
+
+                        case 'application/vnd.oasis.opendocument.presentation':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
+                            break;
+
+                        case 'application/vnd.oasis.opendocument.spreadsheet':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-xls';
+                            break;
+
+                        case 'application/vnd.oasis.opendocument.text':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-doc';
+                            break;
+
+                        case 'application/vnd.oasis.opendocument.text':
+                                this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-pdf';
+                                break;
+
+                        default:
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
+                            break;
+
+
+                    }
+                    this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+                    this.el.imagePanelDocumentPreview.hide();
+                    this.el.filePanelDocumentPreview.show();
+
+                });
+
+            }
 
         });
 
@@ -395,7 +454,7 @@ export class WhatsAppConstroller {
 
                 let cursor = window.getSelection();
 
-                if(!cursor.focusNode || !cursor.focusNode.id == 'input-text'){
+                if (!cursor.focusNode || !cursor.focusNode.id == 'input-text') {
 
                     this.el.inputText.focus();
 

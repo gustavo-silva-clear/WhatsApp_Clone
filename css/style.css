@@ -16076,8 +16076,8 @@ html[dir] ._3nuGo {
 
 ._3nfoJ {
     bottom: 92px;
-    position: absolute;
-    z-index: 2
+    float: right;
+    z-index: 2;
 }
 
 html[dir] ._3nfoJ {
@@ -21662,7 +21662,7 @@ html[dir=rtl] ._2ICcy:after {
 }
 
 #picture-camera {
-     
+
     height: 100%;
     width: auto;
     text-align: center;
