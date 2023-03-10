@@ -3,29 +3,40 @@ import { cameraController } from './cameraController'
 import { DocumentPreviewController } from './DocumentPreviewController';
 import { microphoneController } from './microphoneController'
 import { Firebase } from './../util/Firebase';
+import { User } from '../model/User';
 
 export class WhatsAppConstroller {
 
     constructor() {
-
+        this._firebase = new Firebase();
+        this.initAuth();
         //console.log('WhatsApp ok');
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
-        this._firebase = new Firebase();
-        this.initAuth();
+
     }
 
     initAuth() {
 
         this._firebase.initAuth().then(response => {
 
-            this._user = response.user;
+            this._user = new User();
 
-            this.el.appContent.css({
+            let userRef = User.findByEmail(response.user.email);
 
-                display:'flex'
+            userRef.set({
+                name: response.user.displayName,
+                email: response.user.email,
+                photo: response.user.photoURL
 
+            }).then(() => {
+
+                this.el.appContent.css({
+
+                    display: 'flex'
+
+                });
             });
 
         }).catch(err => {
