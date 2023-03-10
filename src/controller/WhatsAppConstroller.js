@@ -1,7 +1,8 @@
 import { Format } from './../util/Format'
 import { cameraController } from './cameraController'
 import { DocumentPreviewController } from './DocumentPreviewController';
-import {microphoneController} from './microphoneController'
+import { microphoneController } from './microphoneController'
+import { Firebase } from './../util/Firebase';
 
 export class WhatsAppConstroller {
 
@@ -10,6 +11,7 @@ export class WhatsAppConstroller {
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
+        this._firebase = new Firebase();
     }
 
     loadElements() {
@@ -334,8 +336,8 @@ export class WhatsAppConstroller {
                             break;
 
                         case 'application/vnd.oasis.opendocument.text':
-                                this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-pdf';
-                                break;
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-pdf';
+                            break;
 
                         default:
                             this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
@@ -388,21 +390,21 @@ export class WhatsAppConstroller {
             this.el.recordMicrophone.show();
             this.el.btnSendMicrophone.hide();
 
-           this._microphoneController =  new microphoneController();
-          
-           this._microphoneController.on('ready' , musica=>{
+            this._microphoneController = new microphoneController();
 
-            console.log('ready event');
-            
-            this._microphoneController.startRecorder();
+            this._microphoneController.on('ready', musica => {
 
-           });
+                console.log('ready event');
 
-           this._microphoneController.on('recordtimer', timer =>{
+                this._microphoneController.startRecorder();
 
-            this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
+            });
 
-           });
+            this._microphoneController.on('recordtimer', timer => {
+
+                this.el.recordMicrophoneTimer.innerHTML = Format.toTime(timer);
+
+            });
 
         });
 
