@@ -26,6 +26,8 @@ export class Firebase {
         };
 
 
+
+
         if (!window._initializedFirebase) {
 
             firebase.initializeApp(firebaseConfig);
@@ -67,7 +69,7 @@ export class Firebase {
                 let token = result.credential.acessToken;
                 let user = result.user;
 
-                s(user ,  token);
+                s(user, token);
 
             }).catch(err => {
 
