@@ -140,7 +140,7 @@ export class WhatsAppConstroller {
 
                 div.on('click' , e => {
 
-                    this.el.activeName.innerHTML = contact.name;
+                    this.el.activeName.innerHTML  = contact.name;
                     this.el.activeStatus = contact.status;
 
                     if(contact.photo){
