@@ -47,20 +47,19 @@ export class User extends Model {
 
     }
 
+     static getContactsRef(id) {
+
+        return User.getRef().doc(id).collection('contacts')
+
+    }
+
     static findByEmail(email) {
 
         return User.getRef().doc(email);
 
     }
 
-    static getContactsRef(id) {
-
-        return User.getRef()
-            .doc(id)
-            .collection('contacts')
-
-    }
-
+   
     addContact(contact) {
 
         return User.getContactsRef(this.email)
@@ -69,11 +68,11 @@ export class User extends Model {
 
     }
 
-    getContacts(filter = '') {
+    getContacts() {
 
         return new Promise((s, f) => {
 
-            User.getContactsRef(this.email).where('name' ,'>=' , filter).onSnapshot(docs => {
+            User.getContactsRef(this.email).onSnapshot(docs => {
 
                 let contacts = [];
 

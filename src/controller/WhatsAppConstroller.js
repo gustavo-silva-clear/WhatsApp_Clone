@@ -41,10 +41,10 @@ export class WhatsAppConstroller {
                     photo2.show();
 
                 }
+
+                this.initContacts();
+
             });
-
-            this.initContacts();
-
 
             this._user.name = response.user.displayName
             this._user.email = response.user.email
@@ -128,8 +128,8 @@ export class WhatsAppConstroller {
                     </span>
                 </div>
             </div>
-        </div>`;
-
+        </div>`
+        ;
                 if (contact.photo) {
 
                     let img = div.querySelector('.photo');
@@ -138,7 +138,7 @@ export class WhatsAppConstroller {
 
                 }
 
-                this.el.contactMessagesList.appendChild(div);
+                this.el.contactsMessagesList.appendChild(div);
 
             });
 
@@ -355,7 +355,7 @@ export class WhatsAppConstroller {
 
                         this.el.btnClosePanelAddContact.click();
                         console.info('contato foi adicionado com sucesso!');
-
+                        this.el.btnClosePanelAddContact.click();
 
                     });
 
