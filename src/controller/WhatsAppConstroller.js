@@ -29,30 +29,25 @@ export class WhatsAppConstroller {
 
                 this.el.inputNamePanelEditProfile.innerHTML = data.name;
 
-                
-                console.log(response.user.email)
-                console.log(response.name)
-
-
                 if (data.photo) {
 
-                   let photo =  this.el.imgPanelEditProfile;
-                   photo.src = data.photo;
-                   photo.show();
-                   this.el.imgDefaultPanelEditProfile.hide();
-                   
-                   let photo2 = this.el.myPhoto.querySelector('img');
-                   photo2.src = data.photo;
-                   photo2.show();
+                    let photo = this.el.imgPanelEditProfile;
+                    photo.src = data.photo;
+                    photo.show();
+                    this.el.imgDefaultPanelEditProfile.hide();
+
+                    let photo2 = this.el.myPhoto.querySelector('img');
+                    photo2.src = data.photo;
+                    photo2.show();
 
                 }
             });
 
 
-           this._user.name = response.user.displayName
+            this._user.name = response.user.displayName
             this._user.email = response.user.email
             this._user.photo = response.user.photoURL
-            this._user.save().then(()=>{
+            this._user.save().then(() => {
                 this.el.appContent.css({
                     display: 'flex'
                 });
@@ -211,16 +206,16 @@ export class WhatsAppConstroller {
 
         });
 
-        this.el.inputProfilePhoto.on('change', e=>{
+        this.el.inputProfilePhoto.on('change', e => {
 
-            if (this.el.inputProfilePhoto.files.length > 0 ){
+            if (this.el.inputProfilePhoto.files.length > 0) {
 
                 let file = this.el.inputProfilePhoto.files[0]
 
-                Upload.send(file, this._user.email).then(downloadURL=>{
+                Upload.send(file, this._user.email).then(downloadURL => {
 
                     this._user.photo = downloadURL;
-                    this._user.save().then(()=>{
+                    this._user.save().then(() => {
 
                         this.el.btnClosePanelEditProfile.click()
 
@@ -245,7 +240,15 @@ export class WhatsAppConstroller {
 
         this.el.btnSavePanelEditProfile.on('click', e => {
 
-            console.log(this.el.inputNamePanelEditProfile.innerHTML)
+            this.el.btnSavePanelEditProfile.disabled = true;
+
+            this._user.name = this.el.inputNamePanelEditProfile.innerHTML;
+
+            this._user.save().then(() => {
+
+                this.el.btnSavePanelEditProfile.disabled = false;
+
+            });
 
         });
 
@@ -288,7 +291,6 @@ export class WhatsAppConstroller {
 
         });
 
-
         this.el.inputPhoto.on('change', e => {
 
             console.log(this.el.inputPhoto.files);
@@ -300,7 +302,6 @@ export class WhatsAppConstroller {
             });
 
         })
-
 
         this.el.btnAttachCamera.on('click', e => {
 
@@ -441,7 +442,6 @@ export class WhatsAppConstroller {
             console.log('send-doc')
 
         });
-
 
         this.el.btnAttachContact.on('click', e => {
 
