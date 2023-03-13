@@ -25,7 +25,7 @@ export class User extends Model {
 
     getById(id) {
 
-        return new Promise((s, f)=>{
+        return new Promise((s, f) => {
 
             User.findByEmail(id).onSnapshot(doc => {
                 this.fromJSON(doc.data());
@@ -53,13 +53,47 @@ export class User extends Model {
 
     }
 
-    addContact(contact){
+    static getContactsRef(id) {
 
-       return User.getRef()
-       .doc(this.email)
-       .collection('contacts')
-       .doc(btoa(contact.email))
-       .set(contact.toJSON());
+        return User.getRef()
+            .doc(id)
+            .collection('contacts')
+
+    }
+
+    addContact(contact) {
+
+        return User.getContactsRef(this.email)
+            .doc(btoa(contact.email))
+            .set(contact.toJSON());
+
+    }
+
+    getContacts(filter = '') {
+
+        return new Promise((s, f) => {
+
+            User.getContactsRef(this.email).where('name' ,'>=' , filter).onSnapshot(docs => {
+
+                let contacts = [];
+
+                docs.forEach(doc => {
+
+                    let data = doc.data();
+
+                    data.id = doc.id;
+
+                    contacts.push(data);
+
+                });
+
+                this.trigger('contactschange' , docs)
+
+                s(contacts)
+
+            });
+
+        });
 
     }
 
