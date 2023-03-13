@@ -1,5 +1,5 @@
-import { Firebase } from './Firebase';
-import { Model } from './../util/Model'
+import { Firebase } from './../util/Firebase';
+import { Model } from './Model'
 
 
 export class User extends Model {
@@ -19,26 +19,20 @@ export class User extends Model {
     set email(value) { this._data.email = value; }
 
     get photo() { return this._data.photo; }
-    set photo(value) {this._data.photo = value; }
-    
+    set photo(value) { this._data.photo = value; }
+
 
 
     getById(id) {
 
-        return new Promise((s, f) => {
+        return new Promise((s, f)=>{
 
-            User.findByEmail(id).get().then(doc => {
-
+            User.findByEmail(id).onSnapshot(doc => {
                 this.fromJSON(doc.data());
-
+                s(doc);
             })
 
-        }).catch(err =>{
-
-            f(err);
-
         });
-
     }
 
     save() {
@@ -57,6 +51,6 @@ export class User extends Model {
 
         return User.getRef().doc(email);
 
-    } 
+    }
 
 }

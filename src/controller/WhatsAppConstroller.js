@@ -3,7 +3,7 @@ import { cameraController } from './cameraController'
 import { DocumentPreviewController } from './DocumentPreviewController';
 import { microphoneController } from './microphoneController'
 import { Firebase } from './../util/Firebase';
-import { User } from '../util/User';
+import { User } from '../model/User';
 
 export class WhatsAppConstroller {
 
@@ -21,7 +21,7 @@ export class WhatsAppConstroller {
 
         this._firebase.initAuth().then(response => {
 
-            this._user = new User(response.email);
+            this._user = new User(response.user.email);
 
             this._user.on('datachange', data => {
 
@@ -29,7 +29,10 @@ export class WhatsAppConstroller {
 
                 this.el.inputNamePanelEditProfile.innerHTML = data.name;
 
-                console.log(response.eamil)
+                
+                console.log(response.user.email)
+                console.log(response.name)
+
 
                 if (data.photo) {
 
@@ -45,12 +48,15 @@ export class WhatsAppConstroller {
                 }
             });
 
-            this.el.appContent.css({
 
-                display: 'flex'
-
+           this._user.name = response.user.displayName
+            this._user.email = response.user.email
+            this._user.photo = response.user.photoURL
+            this._user.save().then(()=>{
+                this.el.appContent.css({
+                    display: 'flex'
+                });
             });
-
         }).catch(err => {
 
             console.error(err);
@@ -204,6 +210,27 @@ export class WhatsAppConstroller {
             this.el.inputProfilePhoto.click();
 
         });
+
+        this.el.inputProfilePhoto.on('change', e=>{
+
+            if (this.el.inputProfilePhoto.files.length > 0 ){
+
+                let file = this.el.inputProfilePhoto.files[0]
+
+                Upload.send(file, this._user.email).then(downloadURL=>{
+
+                    this._user.photo = downloadURL;
+                    this._user.save().then(()=>{
+
+                        this.el.btnClosePanelEditProfile.click()
+
+                    });
+
+                })
+
+            }
+
+        })
 
         this.el.inputNamePanelEditProfile.on('keypress', e => {
 

@@ -1,4 +1,4 @@
-import { classEvent } from "./classEvent";
+import { classEvent } from "../util/classEvent";
 
 export class Model extends classEvent {
 
