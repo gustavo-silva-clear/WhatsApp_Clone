@@ -332,6 +332,25 @@ export class WhatsAppConstroller {
 
     initEvents() {
 
+
+
+        this.el.inputSearchContacts.on('keyup' , e => {
+
+            if(this.el.inputSearchContacts.value.length > 0){
+
+                this.el.inputSearchContactPlaceholder.hide();
+
+            }
+            else{
+
+                this.el.inputSearchContactPlaceholder.show();
+
+            }
+
+            this._user.getContacts(this.el.inputSearchContacts.value);
+
+        });
+
         this.el.myPhoto.on('click', e => {
 
             this.closeAllLeftPanel();
