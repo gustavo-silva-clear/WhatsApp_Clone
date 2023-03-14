@@ -1,5 +1,6 @@
 import { Model } from "./Model";
 import { Firebase } from "../util/Firebase";
+import { Format } from "../util/Format";
 
 export class Message extends Model {
 
@@ -9,6 +10,9 @@ export class Message extends Model {
 
     }
 
+
+    get id() { return this._data.id; }
+    set id(value) { return this._data.id = value; }
 
     get content() { return this._data.content; }
     set content(value) { return this._data.content = value; }
@@ -298,7 +302,7 @@ export class Message extends Model {
                 break;
             default:
                 div.innerHTML = `
-                <div class="font-style _3DFk6 tail">
+                <div class="font-style _3DFk6 tail" id= "${this.id}">
                     <span class="tail-container"></span>
                     <span class="tail-container highlight"></span>
                     <div class="Tkt2p">
@@ -307,7 +311,7 @@ export class Message extends Model {
                         </div>
                         <div class="_2f-RV">
                             <div class="_1DZAH">
-                                <span class="msg-time">11:33</span>
+                                <span class="msg-time">${Format.timeStampToTime(this.timeStamp)}</span>
                             </div>
                         </div>
                     </div>

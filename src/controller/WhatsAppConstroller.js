@@ -203,6 +203,9 @@ export class WhatsAppConstroller {
             docs.forEach(doc => {
 
                 let data = doc.data();
+
+                data.id = doc.id;
+
                 let message = new Message();
 
                 message.fromJSON(data);
