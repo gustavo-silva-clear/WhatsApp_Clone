@@ -5,6 +5,7 @@ import { microphoneController } from './microphoneController'
 import { Firebase } from './../util/Firebase';
 import { User } from '../model/User';
 import { Chat } from '../model/Chat';
+import { Message } from '../model/Message';
 
 export class WhatsAppConstroller {
 
@@ -141,24 +142,8 @@ export class WhatsAppConstroller {
 
                 div.on('click' , e => {
 
-                    this.el.activeName.innerHTML  = contact.name;
-                    this.el.activeStatus = contact.status;
-
-                    if(contact.photo){
-
-                        let img = this.el.activePhoto;
-                        img.src = contact.photo;
-                        img.show();
-
-                    }
-
-                    this.el.home.hide();
-                    this.el.main.css({
-
-                        display: 'flex'
-
-                    });
-
+                   this.setActiveChat(contact);
+   
                 })
 
                 this.el.contactsMessagesList.appendChild(div);
@@ -180,6 +165,31 @@ export class WhatsAppConstroller {
 
 
         });
+
+    }
+
+    setActiveChat(contact){
+
+        this._contactActive = contact;
+
+        this.el.activeName.innerHTML  = contact.name;
+        this.el.activeStatus = contact.status;
+
+        if(contact.photo){
+
+            let img = this.el.activePhoto;
+            img.src = contact.photo;
+            img.show();
+
+        }
+
+        this.el.home.hide();
+        this.el.main.css({
+
+            display: 'flex'
+
+        });
+
 
     }
 
@@ -640,7 +650,6 @@ export class WhatsAppConstroller {
             this.closeRecordMicrophone();
         })
 
-
         this.el.inputText.on('keypress', e => {
 
             if (e.key === 'Enter' && !e.ctrlKey) {
@@ -671,6 +680,14 @@ export class WhatsAppConstroller {
         });
 
         this.el.btnSend.on('click', e => {
+
+            this._contactActive
+
+            Message.send(this._contactActive.chatId,
+                this._user.email, 'text' ,this.el.inputText.innerHTML);
+
+            this.el.inputText.innerHTML = '';
+            this.el.panelEmojis.removeClass('open')
 
             console.log(this.el.inputText.innerHTML);
 
