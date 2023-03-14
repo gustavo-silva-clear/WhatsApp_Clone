@@ -131,7 +131,7 @@ export class WhatsAppConstroller {
                 </div>
             </div>
         </div>`
-        ;
+                    ;
                 if (contact.photo) {
 
                     let img = div.querySelector('.photo');
@@ -140,10 +140,10 @@ export class WhatsAppConstroller {
 
                 }
 
-                div.on('click' , e => {
+                div.on('click', e => {
 
-                   this.setActiveChat(contact);
-   
+                    this.setActiveChat(contact);
+
                 })
 
                 this.el.contactsMessagesList.appendChild(div);
@@ -168,14 +168,20 @@ export class WhatsAppConstroller {
 
     }
 
-    setActiveChat(contact){
+    setActiveChat(contact) {
+
+        if(this._contactActive){
+
+            Message.getRef(this._contactActive.chatId).onSnapshot(() => {});
+        
+        }
 
         this._contactActive = contact;
 
-        this.el.activeName.innerHTML  = contact.name;
+        this.el.activeName.innerHTML = contact.name;
         this.el.activeStatus = contact.status;
 
-        if(contact.photo){
+        if (contact.photo) {
 
             let img = this.el.activePhoto;
             img.src = contact.photo;
@@ -189,6 +195,26 @@ export class WhatsAppConstroller {
             display: 'flex'
 
         });
+
+        Message.getRef(this._contactActive.chatId).orderBy('timeStamp').onSnapshot(docs => {
+
+            this.el.panelMessagesContainer.innerHTML = '';
+
+            docs.forEach(doc => {
+
+                let data = doc.data();
+                let message = new Message();
+
+                message.fromJSON(data);
+
+                let me = (data.from === this._user.email)
+                let view = message.getViewElement(me);
+
+                this.el.panelMessagesContainer.appendChild(view);
+
+            })
+
+        })
 
 
     }
@@ -384,7 +410,7 @@ export class WhatsAppConstroller {
 
                 if (data.name) {
 
-                    Chat.createIfNotExists(this._user.email , contact.email).then(chat => {
+                    Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
 
                         contact.chatId = chat.id;
 
@@ -394,15 +420,15 @@ export class WhatsAppConstroller {
 
                         this._user.addContact(contact).then(() => {
 
-                        this.el.btnClosePanelAddContact.click();
-                        console.info('contato foi adicionado com sucesso!');
-                        this.el.btnClosePanelAddContact.click();
+                            this.el.btnClosePanelAddContact.click();
+                            console.info('contato foi adicionado com sucesso!');
+                            this.el.btnClosePanelAddContact.click();
 
-                    });
+                        });
 
                     })
 
-                    
+
 
                 }
                 else {
@@ -684,7 +710,7 @@ export class WhatsAppConstroller {
             this._contactActive
 
             Message.send(this._contactActive.chatId,
-                this._user.email, 'text' ,this.el.inputText.innerHTML);
+                this._user.email, 'text', this.el.inputText.innerHTML);
 
             this.el.inputText.innerHTML = '';
             this.el.panelEmojis.removeClass('open')
