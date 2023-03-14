@@ -170,10 +170,10 @@ export class WhatsAppConstroller {
 
     setActiveChat(contact) {
 
-        if(this._contactActive){
+        if (this._contactActive) {
 
-            Message.getRef(this._contactActive.chatId).onSnapshot(() => {});
-        
+            Message.getRef(this._contactActive.chatId).onSnapshot(() => { });
+
         }
 
         this._contactActive = contact;
@@ -196,9 +196,17 @@ export class WhatsAppConstroller {
 
         });
 
+        this.el.panelMessagesContainer.innerHTML = '';
+
         Message.getRef(this._contactActive.chatId).orderBy('timeStamp').onSnapshot(docs => {
 
-            this.el.panelMessagesContainer.innerHTML = '';
+            let scrollTop = this.el.panelMessagesContainer.scrollTop;
+
+            let scrollTopMax =
+                (this.el.panelMessagesContainer.scrollHeight -
+                    this.el.panelMessagesContainer.offsetHeight);
+
+            let autoScroll = (scrollTop >= scrollTopMax);
 
             docs.forEach(doc => {
 
@@ -206,19 +214,32 @@ export class WhatsAppConstroller {
 
                 data.id = doc.id;
 
-                let message = new Message();
+                if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
-                message.fromJSON(data);
 
-                let me = (data.from === this._user.email)
-                let view = message.getViewElement(me);
+                    let message = new Message();
 
-                this.el.panelMessagesContainer.appendChild(view);
+                    message.fromJSON(data);
+                    let me = (data.from === this._user.email);
+                    let view = message.getViewElement(me);
 
+                    this.el.panelMessagesContainer.appendChild(view);
+
+                }
             })
 
-        })
+            if (autoScroll) {
 
+                this.el.panelMessagesContainer.scrollTop = (this.el.panelMessagesContainer.scrollHeight - this.el.panelMessagesContainer.offsetHeight);
+
+            }
+
+            else {
+
+                this.el.panelMessagesContainer.scrollTop = scrollTop;
+
+            }
+        })
 
     }
 
