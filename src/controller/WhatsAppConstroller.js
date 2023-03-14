@@ -214,18 +214,27 @@ export class WhatsAppConstroller {
 
                 data.id = doc.id;
 
+                let message = new Message();
+
+                message.fromJSON(data);
+
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
-
-
-                    let message = new Message();
-
-                    message.fromJSON(data);
+                    
                     let me = (data.from === this._user.email);
+
                     let view = message.getViewElement(me);
 
                     this.el.panelMessagesContainer.appendChild(view);
 
                 }
+                else {
+
+                    let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+
+                    msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
+
+                }
+
             })
 
             if (autoScroll) {
@@ -332,16 +341,14 @@ export class WhatsAppConstroller {
 
     initEvents() {
 
+        this.el.inputSearchContacts.on('keyup', e => {
 
-
-        this.el.inputSearchContacts.on('keyup' , e => {
-
-            if(this.el.inputSearchContacts.value.length > 0){
+            if (this.el.inputSearchContacts.value.length > 0) {
 
                 this.el.inputSearchContactPlaceholder.hide();
 
             }
-            else{
+            else {
 
                 this.el.inputSearchContactPlaceholder.show();
 
