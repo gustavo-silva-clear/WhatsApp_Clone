@@ -219,20 +219,34 @@ export class WhatsAppConstroller {
                 message.fromJSON(data);
 
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
-                    
-                    let me = (data.from === this._user.email);
 
+                    let me = (data.from === this._user.email);
+                    
                     let view = message.getViewElement(me);
+                    
+                    if (!me) {
+
+                        doc.ref.set({
+
+                            status: 'read'
+
+                        }, {
+
+                            merge: true
+
+                        })
+
+                    }
 
                     this.el.panelMessagesContainer.appendChild(view);
 
                 }
-                else {
+                else if(me){
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
                     msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
-                    
+
                 }
 
             })
