@@ -221,9 +221,9 @@ export class WhatsAppConstroller {
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
                     let me = (data.from === this._user.email);
-                    
+
                     let view = message.getViewElement(me);
-                    
+
                     if (!me) {
 
                         doc.ref.set({
@@ -241,7 +241,7 @@ export class WhatsAppConstroller {
                     this.el.panelMessagesContainer.appendChild(view);
 
                 }
-                else if(me){
+                else if (me) {
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
@@ -544,7 +544,7 @@ export class WhatsAppConstroller {
 
             [...this.el.inputPhoto.files].forEach(file => {
 
-                Message.sendImage(this._contactActive.chatId, this._user.email,file);
+                Message.sendImage(this._contactActive.chatId, this._user.email, file);
 
             });
 
@@ -596,7 +596,27 @@ export class WhatsAppConstroller {
 
         this.el.btnSendPicture.on('click', e => {
 
-            console.log(this.el.pictureCamera);
+            this.el.btnSendPicture.disabled = true;
+
+            let regex = /^data:(.+);base64,(.*)$/;
+            let result = this.el.pictureCamera.src.match(regex);
+            let mimeType = result[1];
+            let ext = mimeType.split('/')[1]
+            let filename = `camera${Date.now()}.${ext}`;
+
+
+
+            fetch(this.el.pictureCamera.src)
+                .then(res => { return res.arrayBuffer(); })
+                .then(buffer => { return new File([buffer], filename, { type: mimeType }); })
+                .then(file => {
+
+                    Message.sendImage(this._contactActive.chatId, this._user.email, file);
+
+                    this.el.btnSendPicture.disabled = false;
+
+
+                })
 
         });
 
