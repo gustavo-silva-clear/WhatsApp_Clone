@@ -270,7 +270,7 @@ export class Message extends Model {
                 break;
             default:
                 div.innerHTML = `
-                <div class="font-style _3DFk6 tail" id= "_${this.id}">
+                <div class="font-style _3DFk6 tail">
                     <span class="tail-container"></span>
                     <span class="tail-container highlight"></span>
                     <div class="Tkt2p">

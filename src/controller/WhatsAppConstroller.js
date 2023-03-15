@@ -232,7 +232,7 @@ export class WhatsAppConstroller {
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
                     msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
-
+                    
                 }
 
             })
