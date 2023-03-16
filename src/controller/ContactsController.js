@@ -18,7 +18,7 @@ export class ContactsController extends classEvent {
 
             this._listEl.innerHTML = '';
 
-            contacts.forEach(contacts => {
+            contacts.forEach(contact => {
 
                 let div = document.createElement('div');
 
@@ -80,6 +80,7 @@ export class ContactsController extends classEvent {
                 div.on('click' , e => {
 
                     this.trigger('select', contact); 
+                    this.close();
 
                  });
 
@@ -90,7 +91,7 @@ export class ContactsController extends classEvent {
         });
 
 
-        this._modalEl
+        this._modalEl.show();
 
     }
 
