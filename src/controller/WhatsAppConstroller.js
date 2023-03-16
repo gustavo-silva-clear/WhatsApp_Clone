@@ -219,8 +219,9 @@ export class WhatsAppConstroller {
 
 
                 let me = (data.from === this._user.email);
-                let view = message.getViewElement(me);
 
+                let view = message.getViewElement(me);
+                this.el.panelMessagesContainer.appendChild(view);
 
                 if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) {
 
@@ -240,14 +241,52 @@ export class WhatsAppConstroller {
 
                     }
 
-                    this.el.panelMessagesContainer.appendChild(view);
+                    else {
+
+                        let parent = this.el.panelMessagesContainer.querySelector('#_' + data.id).parentNode;
+
+                        parent.replaceChild(view, this.el.panelMessagesContainer.querySelector('#_' + data.id))
+
+                    }
+
+
 
                 }
-                else if (me) {
+                if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
+
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
 
                     msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement().outerHTML;
+
+                }
+
+                if (message.type === 'contact') {
+
+                    view.querySelector('.btn-message-send').on('click', e => {
+
+                        Chat.createIfNotExists(this._user.email, message.content.email).then(chat => {
+
+                            let contact = new User(message.content.email);
+
+                            contact.on('datachange', data => {
+
+                                contact.chatId = chat.id;
+
+                                this._user.addContact(contact);
+
+                                this._user.chatId = chat.id;
+
+                                contact.addContact(this._user);
+
+                                this.setActiveChat(contact);
+
+                            });
+
+                        });
+
+
+                    });
 
                 }
 
@@ -488,13 +527,10 @@ export class WhatsAppConstroller {
 
                             this.el.btnClosePanelAddContact.click();
                             console.info('contato foi adicionado com sucesso!');
-                            this.el.btnClosePanelAddContact.click();
 
                         });
 
                     })
-
-
 
                 }
                 else {
@@ -760,11 +796,11 @@ export class WhatsAppConstroller {
 
             this.el.modalContacts.show();
 
-            this._contactsController = new ContactsController(this._contactsController , this._user);
+            this._contactsController = new ContactsController(this._contactsController, this._user);
 
-            this._contactsController.on('select' , contact => {
+            this._contactsController.on('select', contact => {
 
-                Message.sendContact(this._contactActive.chatId , this._user.email , contact);
+                Message.sendContact(this._contactActive.chatId, this._user.email, contact);
 
             });
 
@@ -772,7 +808,7 @@ export class WhatsAppConstroller {
 
         });
 
-        this.el.btnCloseModalContacts.on('click', e => {
+        this.el.btnCloseModalContacts.on('click', event => {
 
             this._contactsController.close();
 

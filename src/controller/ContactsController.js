@@ -91,13 +91,13 @@ export class ContactsController extends classEvent {
         });
 
 
-        this._modalEl.show();
+        this._modal.show();
 
     }
 
     close() {
 
-        this._modalEl.hide();
+        this._modal.hide();
 
     }
 

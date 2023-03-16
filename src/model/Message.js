@@ -94,12 +94,6 @@ export class Message extends Model {
 
             }
 
-            div.querySelector('.btn-message-send').on('click' , e => {
-
-                console.log('foi')
-
-            })
-
                 break;
             case 'image':
                 div.innerHTML = `
@@ -127,12 +121,6 @@ export class Message extends Model {
                                 </div>
                                 <img src="${this.content}" class="_1JVSX message-photo" style="width: 100%; display:none">
                                 <div class="_1i3Za"></div>
-                            </div>
-                            <div class="message-container-legend">
-                                <div class="_3zb-j ZhF0n">
-                                    <span dir="ltr" class="selectable-text invisible-space copyable-text message-text">Texto
-                                        da foto</span>
-                                </div>
                             </div>
                             <div class="_2TvOE">
                                 <div class="_1DZAH text-white" role="button">
@@ -355,8 +343,6 @@ console.log('msgy')
 
             uploadTask.on('state_changed', e => {
 
-                // console.info('upload', e);
-
             }, err => {
                 console.error(err)
             }, () => {
@@ -371,6 +357,54 @@ console.log('msgy')
                         s();
                     });
                 });
+
+            });
+
+        });
+
+    }
+
+    static sendDocument(chatId, from, documentFile, imageFile, pdfInfo) {
+
+        Message.send(chatId, from, 'document', '', false).then(msgRef => {
+
+            Message.upload(chatId, from, documentFile).then(downloadURL => {
+
+                let fileDocumentDownload = downloadURL;
+
+                if (imageFile) {
+
+                    Message.upload(chatId, from, imageFile).then(downloadURL2 => {
+
+                        let fileImageDownload = downloadURL2;
+
+                        msgRef.set({
+                            content: fileDocumentDownload,
+                            preview: fileImageDownload,
+                            filename: documentFile.name,
+                            size: documentFile.size,
+                            info: pdfInfo,
+                            fileType: documentFile.type,
+                            status: 'sent'
+                        }, {
+                            merge: true
+                        });
+
+                    });
+
+                } else {
+
+                    msgRef.set({
+                        content: fileDocumentDownload,
+                        filename: documentFile.name,
+                        size: documentFile.size,
+                        fileType: documentFile.type,
+                        status: 'sent'
+                    }, {
+                        merge: true
+                    });
+
+                }
 
             });
 
