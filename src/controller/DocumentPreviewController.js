@@ -1,7 +1,6 @@
 const pdfjsLib = require('pdfjs-dist');
 const path = require('path');
-pdfjsLib.GlobalWorkerOptions.workerSrc = path.resolve(__dirname,
-    '../../dist/pdf.worker.bundle.js');
+pdfjsLib.GlobalWorkerOptions.workerSrc = path.resolve(__dirname, '../../dist/pdf.worker.bundle.js');
 
 export class DocumentPreviewController {
 
@@ -18,6 +17,10 @@ export class DocumentPreviewController {
 
             let reader = new FileReader();
 
+            reader.onerror = e => {
+
+                f(e);
+            }
             switch (this._file.type) {
 
                 case 'image/png':
@@ -29,17 +32,13 @@ export class DocumentPreviewController {
                     reader.onload = e => {
 
                         s({
-
                             src: reader.result,
                             info: this._file.name
 
                         });
 
                     }
-                    reader.onerror = e => {
 
-                        f(e);
-                    }
 
                     reader.readAsDataURL(this._file);
 
@@ -71,10 +70,10 @@ export class DocumentPreviewController {
                                     s({
 
                                         src: canvas.toDataURL('image/png'),
-                                        info:`${pdf.numPages} página${_s}` 
-            
+                                        info: `${pdf.numPages} página${_s}`
+
                                     });
-            
+
 
                                 }).catch(err => {
 

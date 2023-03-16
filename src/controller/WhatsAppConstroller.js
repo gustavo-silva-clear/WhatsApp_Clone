@@ -171,13 +171,13 @@ export class WhatsAppConstroller {
 
     setActiveChat(contact) {
 
-        if (this._contactActive) {
+        if (this._activeContact) {
 
-            Message.getRef(this._contactActive.chatId).onSnapshot(() => { });
+            Message.getRef(this._activeContact.chatId).onSnapshot(() => { });
 
         }
 
-        this._contactActive = contact;
+        this._activeContact = contact;
 
         this.el.activeName.innerHTML = contact.name;
         this.el.activeStatus = contact.status;
@@ -200,7 +200,7 @@ export class WhatsAppConstroller {
         this.el.panelMessagesContainer.innerHTML = '';
 
 
-        Message.getRef(this._contactActive.chatId).orderBy('timeStamp').onSnapshot(docs => {
+        Message.getRef(this._activeContact.chatId).orderBy('timeStamp').onSnapshot(docs => {
 
             let scrollTop = this.el.panelMessagesContainer.scrollTop;
             let scrollTopMax =
@@ -545,7 +545,7 @@ export class WhatsAppConstroller {
 
             [...this.el.inputPhoto.files].forEach(file => {
 
-                Message.sendImage(this._contactActive.chatId, this._user.email, file);
+                Message.sendImage(this._activeContact.chatId, this._user.email, file);
 
             });
 
@@ -629,7 +629,7 @@ export class WhatsAppConstroller {
                     .then(buffer => { return new File([buffer], filename, { type: mimeType }); })
                     .then(file => {
 
-                        Message.sendImage(this._contactActive.chatId, this._user.email, file);
+                        Message.sendImage(this._activeContact.chatId, this._user.email, file);
 
                         this.el.btnSendPicture.disabled = false;
 
@@ -735,20 +735,20 @@ export class WhatsAppConstroller {
         this.el.btnSendDocument.on('click', e => {
 
             let file = this.el.inputDocument.files[0];
-            let base64 = this.el.imgPanelDocumentPreview.src;
+            let base64 = this.el.imgPanelDocumentPreview.src
 
-            if (file.type === 'aplication/pdf') {
+            if (file.type === 'application/pdf') {
 
-                Base64.toFile(base64).then(filePreview => {
+                Base64.toFile(base64).then(imageFile => {
 
-                Message.sendDocument(this._contactActive.chatId,
-                    this._user.email, file, filePreview , this.el.infoPanelDocumentPreview.innerHTML);
-            });
+                    Message.sendDocument(this._activeContact.chatId, this._user.email, file, imageFile, this.el.infoPanelDocumentPreview.innerHTML);
+
+                });
 
             } else {
 
-                Message.sendDocument(this._contactActive.chatId,
-                    this._user.email, file);
+                Message.sendDocument(this._activeContact.chatId, this._user.email, file);
+
             }
 
             this.el.btnClosePanelDocumentPreview.click();
@@ -758,6 +758,16 @@ export class WhatsAppConstroller {
         this.el.btnAttachContact.on('click', e => {
 
             this.el.modalContacts.show();
+
+            this._contactsController = new ContactsController(this._contactsController , this._user);
+
+            this._contactsController.on('select' , contact => {
+
+                Message.sendContact(this._contactActive.chatId , this._user.email , contact);
+
+            });
+
+            this._contactsController.open();
 
         });
 
@@ -836,9 +846,9 @@ export class WhatsAppConstroller {
 
         this.el.btnSend.on('click', e => {
 
-            this._contactActive
+            this._activeContact
 
-            Message.send(this._contactActive.chatId,
+            Message.send(this._activeContact.chatId,
                 this._user.email, 'text', this.el.inputText.innerHTML);
 
             this.el.inputText.innerHTML = '';

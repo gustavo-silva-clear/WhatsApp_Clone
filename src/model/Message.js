@@ -328,6 +328,36 @@ export class Message extends Model {
 
 
 
+    
+    static upload(from ,file ) {
+
+        return new Promise((s, f) => {
+
+            let uploadTask = Firebase
+            .hd()
+            .ref(from)
+            .child(Date.now() + '_' + file.name)
+            .put(file);
+
+            uploadTask.on('state_changed', snapshot => {
+
+                console.info('upload', snapshot);
+
+            }, err => {
+
+                f(err);
+
+            },success => {
+                s(uploadTask.snapshot);
+
+            });
+
+        })
+
+
+
+    }
+
     static send(chatId, from, type, content) {
         return new Promise((s, f) => {
             Message.getRef(chatId).add({
@@ -352,33 +382,6 @@ export class Message extends Model {
 
     }
 
-    static upload(file , from) {
-
-        return new Promise((s, f) => {
-
-            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
-
-            uploadTask.on('state_changed', snapshot => {
-
-                console.info('upload', snapshot);
-
-            }, err => {
-
-                f(err);
-
-            }, () => {
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-                    s(downloadURL);})
-
-            });
-
-        })
-
-
-
-    }
-
-
 
     static getRef(chatId) {
 
@@ -390,57 +393,77 @@ export class Message extends Model {
 
         return new Promise((s, f) => {
 
-            Message.upload(file , from).then(snapshot => {
+            let uploadTask = Firebase.hd().ref(from).child(Date.now() + '_' + file.name).put(file);
 
-                Message.send(
-                    chatId,
-                    from,
-                    'image',
-                    snapshot.downloadURL
-                ).then(() => {
+            uploadTask.on('state_changed', e => {
 
-                    s();
+                // console.info('upload', e);
+
+            }, err => {
+                console.error(err)
+            }, () => {
+
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                    Message.send(
+                        chatId,
+                        from,
+                        'image',
+                        downloadURL
+                    ).then(() => {
+                        s();
+                    });
                 });
-
 
             });
 
         });
 
-
     }
+    static sendDocument(chatId, from, documentFile, imageFile, pdfInfo) {
 
-    static sendDocument(chatId, from, file, filePreview) {
+        return Message.send(chatId, from, 'document', '', false).then(msgRef => {
 
-        Message.send(chatId, from, 'document').then(msgRef => {
+            Message.upload(from, documentFile).then(snapshot=>{
 
-                Message.upload(file , from).then(snapshot => {
+                let fileDocumentDownload = snapshot.downloadURL;
 
-                    let downloadFile = snapshot.downloadURL;
+                if (imageFile) {
 
-                    Message.upload(filePreview , from).then(snapshot2 => {
+                    Message.upload(from, imageFile).then(snapshot => {
 
-                        let downloadPreview = snapshot2.downloadURL;
+                        let fileImageDownload = snapshot.downloadURL;
 
                         msgRef.set({
-
-                            content: downloadFile,
-                            preview: downloadPreview,
-                            filename: file.name,
-                            size: file.size , 
+                            content: fileDocumentDownload,
+                            preview: fileImageDownload,
+                            filename: documentFile.name,
+                            size: documentFile.size,
+                            info: pdfInfo,
+                            fileType: documentFile.type,
                             status: 'sent'
-
                         }, {
-
-                            merge :true
-                        })
+                            merge: true
+                        });
 
                     });
-                });
 
-        })
+                } else {
 
+                    msgRef.set({
+                        content: fileDocumentDownload,
+                        filename: documentFile.name,
+                        size: documentFile.size,
+                        fileType: documentFile.type,
+                        status: 'sent'
+                    }, {
+                        merge: true
+                    });
 
+                }
+
+            });            
+
+        });
 
     }
 
