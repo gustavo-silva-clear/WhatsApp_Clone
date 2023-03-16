@@ -143,16 +143,21 @@ export class Message extends Model {
             
             `;
 
-                div.querySelector('.message-photo').on('load', e => {
+                div.querySelector('.message-photo').on('load', function(){
 
-                    div.querySelector('.message-photo').show();
+                    this.show();
+
                     div.querySelector('._34Olu').hide();
+
                     div.querySelector('._3v3PK').css({
-                        heigth: 'auto'
+                        height: 'auto'
                     });
 
+                }).on('click', function(){
 
-                })
+                    window.open(this.src);
+
+                });
                 break;
             case 'audio':
                 div.innerHTML = `
@@ -326,9 +331,6 @@ export class Message extends Model {
 
     }
 
-
-
-    
     static upload(from ,file ) {
 
         return new Promise((s, f) => {

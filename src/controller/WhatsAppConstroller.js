@@ -7,6 +7,7 @@ import { User } from '../model/User';
 import { Chat } from '../model/Chat';
 import { Message } from '../model/Message';
 import { Base64 } from '../util/Base64';
+import { ContactsController } from './ContactsController';
 
 export class WhatsAppConstroller {
 
@@ -773,9 +774,7 @@ export class WhatsAppConstroller {
 
         this.el.btnCloseModalContacts.on('click', e => {
 
-
-            this.closeAllMainPanel();
-            this.el.panelMessagesContainer.show();
+            this._contactsController.close();
 
         });
 
