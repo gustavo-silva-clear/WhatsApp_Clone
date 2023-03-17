@@ -199,7 +199,7 @@ export class Message extends Model {
                                                 </svg>
                                             </span>
                                         </button>
-                                        <button class="_2pQE3 audio-pause">
+                                        <button class="_2pQE3 audio-pause" style="display:none">
                                             <span data-icon="audio-pause">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" width="34" height="34">
                                                     <path fill="#263238" fill-opacity=".5" d="M9.2 25c0 .5.4 1 .9 1h3.6c.5 0 .9-.4.9-1V9c0-.5-.4-.9-.9-.9h-3.6c-.4-.1-.9.3-.9.9v16zm11-17c-.5 0-1 .4-1 .9V25c0 .5.4 1 1 1h3.6c.5 0 1-.4 1-1V9c0-.5-.4-.9-1-.9 0-.1-3.6-.1-3.6-.1z">
@@ -276,8 +276,8 @@ export class Message extends Model {
                 }
 
                 let audioEl = div.querySelector('audio');
-                let loadEl = div.querySelector('.audio-load');
                 let btnPlay = div.querySelector('.audio-play');
+                let loadEl = div.querySelector('.audio-load');
                 let btnPause = div.querySelector('.audio-pause');
                 let inputRange = div.querySelector('[type=range]');
                 let audioDuration = div.querySelector('.message-audio-duration');
@@ -297,6 +297,7 @@ export class Message extends Model {
                 }
 
                 audioEl.onpause = e => {
+                    
 
                     audioDuration.innerHTML = Format.toTime(this.duration)
 
@@ -345,7 +346,7 @@ export class Message extends Model {
 
                 });
 
-                inputRange.on('change', e => {
+                inputRange.on('changed', e => {
 
                     audioEl.currentTime = (inputRange.value * this.duration) / 100;
 
