@@ -14,7 +14,6 @@ export class WhatsAppConstroller {
     constructor() {
         this._firebase = new Firebase();
         this.initAuth();
-        //console.log('WhatsApp ok');
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
@@ -179,6 +178,7 @@ export class WhatsAppConstroller {
         }
 
         this._activeContact = contact;
+        this._messagesReceived = [];
 
         this.el.activeName.innerHTML = contact.name;
         this.el.activeStatus = contact.status;
@@ -252,7 +252,7 @@ export class WhatsAppConstroller {
 
 
                 }
-                if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
+                else if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me) {
 
 
                     let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
@@ -303,7 +303,12 @@ export class WhatsAppConstroller {
                 this.el.panelMessagesContainer.scrollTop = scrollTop;
 
             }
-        })
+        });
+
+        this.el.home.hide();
+        this.el.main.css({
+            display: 'flex'
+        });
 
     }
 
@@ -800,7 +805,7 @@ export class WhatsAppConstroller {
 
             this._contactsController.on('select', contact => {
 
-                Message.sendContact(this._contactActive.chatId, this._user.email, contact);
+                Message.sendContact(this._activeContact.chatId, this._user.email, contact);
 
             });
 
@@ -810,7 +815,8 @@ export class WhatsAppConstroller {
 
         this.el.btnCloseModalContacts.on('click', event => {
 
-            this._contactsController.close();
+           // this.contactsController.close();
+            this.el.modalContacts.hide();
 
         });
 
@@ -845,6 +851,19 @@ export class WhatsAppConstroller {
         });
 
         this.el.btnFinishMicrophone.on('click', e => {
+
+            this._microphoneController.on('recorded' , (file ,metadata) =>{
+
+                Message.sendAudio(
+                    this._activeContact.chatId,
+                    this._user.email,
+                    file,
+                    metadata,
+                    this._user.photo
+
+                )
+
+            });
 
             this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();

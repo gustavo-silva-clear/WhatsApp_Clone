@@ -1,4 +1,5 @@
 import { classEvent } from "../util/classEvent";
+import { Firebase } from './../util/Firebase';
 
 export class ContactsController extends classEvent {
 
@@ -91,13 +92,13 @@ export class ContactsController extends classEvent {
         });
 
 
-        this._modal.show();
+        this._modalEl.show();
 
     }
 
     close() {
 
-        this._modal.hide();
+        this._modalEl.hide();
 
     }
 
