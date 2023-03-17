@@ -18,6 +18,61 @@ export class WhatsAppConstroller {
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
+        this.checkNotifications();
+    }
+
+    checkNotifications() {
+
+        if (typeof Notification === 'function') {
+
+            if (Notification.permission !== 'granted') {
+
+                this.el.alertNotificationPermission.show();
+
+            }
+            else {
+
+                this.el.alertNotificationPermission.hide();
+
+            }
+
+            this.el.alertNotificationPermission.on('click', e => {
+
+                Notification.requestPermission(permission => {
+
+                    if (permission === 'granted') {
+
+                        this.el.alertNotificationPermission.hide();
+                        console.info('notificações permitidas');
+
+                    }
+
+                })
+
+            })
+
+
+        }
+
+    }
+
+    notification(data) {
+
+        if (Notification.permission === 'granted') {
+
+            let n = new Notification(this._activeContact.name, {
+                icon: this._activeContact.photo,
+                body: data.content
+            });
+
+            setTimeout(() => {
+
+                if (n) n.close();
+
+            }, 2000);
+
+        }
+
 
     }
 
@@ -179,7 +234,6 @@ export class WhatsAppConstroller {
         }
 
         this._activeContact = contact;
-        this._messagesReceived = [];
 
         this.el.activeName.innerHTML = contact.name;
         this.el.activeStatus = contact.status;
@@ -200,6 +254,7 @@ export class WhatsAppConstroller {
         });
 
         this.el.panelMessagesContainer.innerHTML = '';
+        this._messageReceived = [];
 
 
         Message.getRef(this._activeContact.chatId).orderBy('timeStamp').onSnapshot(docs => {
@@ -211,15 +266,23 @@ export class WhatsAppConstroller {
 
             let autoScroll = (scrollTop >= scrollTopMax);
 
+            
+
             docs.forEach(doc => {
 
                 let data = doc.data();
-                data.id = doc.id;
+                let me = (data.from === this._user.email);
                 let message = new Message();
+
+                data.id = doc.id;
                 message.fromJSON(data);
 
+                if (!me && this._messageReceived.filter(id => { return (id === data.id) }).length === 0) {
 
-                let me = (data.from === this._user.email);
+                    this.notification(data);
+                    this._messageReceived.push(data.id);
+
+                }
 
                 let view = message.getViewElement(me);
                 this.el.panelMessagesContainer.appendChild(view);
@@ -816,7 +879,7 @@ export class WhatsAppConstroller {
 
         this.el.btnCloseModalContacts.on('click', event => {
 
-           // this.contactsController.close();
+            // this.contactsController.close();
             this.el.modalContacts.hide();
 
         });
@@ -853,7 +916,7 @@ export class WhatsAppConstroller {
 
         this.el.btnFinishMicrophone.on('click', e => {
 
-            this._microphoneController.on('recorded' , (file ,metadata) =>{
+            this._microphoneController.on('recorded', (file, metadata) => {
 
                 Message.sendAudio(
                     this._activeContact.chatId,
