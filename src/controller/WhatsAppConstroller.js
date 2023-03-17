@@ -122,7 +122,7 @@ export class WhatsAppConstroller {
                                 </svg>
                             </span>
                         </div>
-                        <span dir="ltr" class="_1wjpf _3NFp9">${contact.lastMessage}</span>
+                        <span dir="ltr" class="_1wjpf _3NFp9">${Format.timeStampToTime(contact.lastMessage)}</span>
                         <div class="_3Bxar">
                             <span>
                                 <div class="_15G96">
