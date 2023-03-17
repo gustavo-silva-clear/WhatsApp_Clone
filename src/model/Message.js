@@ -1,6 +1,8 @@
 import { Model } from "./Model";
 import { Firebase } from "../util/Firebase";
 import { Format } from "../util/Format";
+import { Upload } from "../util/Upload";
+import { Upload } from "../util/Upload";
 
 export class Message extends Model {
 
@@ -553,6 +555,12 @@ export class Message extends Model {
             });
 
         });
+
+    }
+
+    static upload(file, from) {
+
+        return Upload.send(file ,  from);
 
     }
 

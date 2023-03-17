@@ -8,6 +8,7 @@ import { Chat } from '../model/Chat';
 import { Message } from '../model/Message';
 import { Base64 } from '../util/Base64';
 import { ContactsController } from './ContactsController';
+import { Upload } from '../util/Upload';
 
 export class WhatsAppConstroller {
 
@@ -468,9 +469,9 @@ export class WhatsAppConstroller {
 
                 let file = this.el.inputProfilePhoto.files[0]
 
-                Upload.send(file, this._user.email).then(downloadURL => {
+                Upload.send(file, this._user.email).then(snapshot => {
 
-                    this._user.photo = downloadURL;
+                    this._user.photo = snapshot.downloadURL;
                     this._user.save().then(() => {
 
                         this.el.btnClosePanelEditProfile.click()
