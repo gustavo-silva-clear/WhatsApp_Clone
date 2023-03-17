@@ -435,7 +435,7 @@ export class Message extends Model {
 
             div.querySelector('.message-time').parentElement.appendChild(this.getStatusViewElement());
 
-            if (this.type === 'image' || this.mimetype === 'image') {
+            if (this.type === 'image' ) {
 
                 div.querySelector('.message-status').querySelector('path').attributes.fill.nodeValue = '#FFF';
 

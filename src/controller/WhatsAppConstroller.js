@@ -13,6 +13,8 @@ import { Upload } from '../util/Upload';
 export class WhatsAppConstroller {
 
     constructor() {
+
+        this._active = true;
         this._firebase = new Firebase();
         this.initAuth();
         this.elementsPrototype();
@@ -58,12 +60,16 @@ export class WhatsAppConstroller {
 
     notification(data) {
 
-        if (Notification.permission === 'granted') {
+        if (Notification.permission === 'granted' && !this._active) {
 
             let n = new Notification(this._activeContact.name, {
                 icon: this._activeContact.photo,
                 body: data.content
             });
+
+            let sound = new Audio('./audio/alert.mp3');
+            sound.currentTime = 0;
+            sound.play();
 
             setTimeout(() => {
 
@@ -464,6 +470,18 @@ export class WhatsAppConstroller {
     /*==============================================INICIO DOS EVENTOS==============================================*/
 
     initEvents() {
+
+        window.addEventListener('focus' , e => {
+
+            this._active = true;
+
+        });
+
+        window.addEventListener('blur' , e => {
+
+            this._active = false;
+
+        });
 
         this.el.inputSearchContacts.on('keyup', e => {
 
